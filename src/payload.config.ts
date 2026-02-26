@@ -5,6 +5,7 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
 import { Users } from './collections/Users'
@@ -12,6 +13,8 @@ import { Media } from './collections/Media'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const emailFromAddress = process.env.SMTP_FROM_ADDRESS || process.env.SMTP_USER
 
 export default buildConfig({
   admin: {
@@ -23,6 +26,23 @@ export default buildConfig({
   collections: [Users, Media],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
+  email:
+    process.env.SMTP_PASS && emailFromAddress
+      ? nodemailerAdapter({
+          defaultFromAddress: emailFromAddress,
+          defaultFromName: process.env.SMTP_FROM_NAME || 'Arrecho Tech',
+          transportOptions: {
+            host: process.env.SMTP_HOST,
+            port: Number(process.env.SMTP_PORT || 587),
+            secure: false,
+            auth: {
+              user: process.env.SMTP_USER,
+              pass: process.env.SMTP_PASS,
+            },
+            requireTLS: true,
+          },
+        })
+      : undefined,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
