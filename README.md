@@ -31,6 +31,12 @@ That's it! Changes made in `./src` will be reflected in your app. Follow the on-
 
 This repo uses Docker Compose for local Postgres.
 
+### Media storage on Vercel (Blob)
+
+The `media` collection uses **Vercel Blob Storage** when deployed to Vercel.
+
+- Ensure `BLOB_READ_WRITE_TOKEN` is set in your Vercel project env vars (Vercel usually sets this automatically when you enable Blob Storage).
+
 - Default credentials: user `postgres`, password `postgres`, db `arrecho-tech`
 - The app reads `DATABASE_URL` from `.env`.
 
