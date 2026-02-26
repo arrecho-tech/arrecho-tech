@@ -21,9 +21,12 @@ export default buildConfig({
     user: Users.slug,
     meta: {
       titleSuffix: '— Arrecho Tech',
-      favicon: '/favicon.svg',
-      // Used in link previews that reference the admin UI
-      ogImage: '/brand/logo-square.svg',
+      icons: {
+        icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+      },
+      openGraph: {
+        images: ['/brand/logo-square.svg'],
+      },
     },
     components: {
       graphics: {
