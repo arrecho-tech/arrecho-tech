@@ -89,8 +89,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    siteSettings: SiteSetting;
+  };
+  globalsSelect: {
+    siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: null;
   user: User;
   jobs: {
@@ -450,6 +454,45 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Site-wide background and motion settings for the frontend shell.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings".
+ */
+export interface SiteSetting {
+  id: number;
+  /**
+   * Used by the frontend shell. One image is chosen randomly per browser session.
+   */
+  backgroundImages?: (number | Media)[] | null;
+  overlayEnabled?: boolean | null;
+  /**
+   * 0 = transparent, 1 = fully black overlay.
+   */
+  overlayOpacity?: number | null;
+  parallaxEnabled?: boolean | null;
+  /**
+   * Higher values move the centered icon more in response to mouse movement.
+   */
+  parallaxIntensity?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  backgroundImages?: T;
+  overlayEnabled?: T;
+  overlayOpacity?: T;
+  parallaxEnabled?: T;
+  parallaxIntensity?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

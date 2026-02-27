@@ -27,12 +27,57 @@ body {
 
   margin: 0;
   color: rgb(1000, 1000, 1000);
+  position: relative;
+  min-height: 100vh;
 
   @media (max-width: 1024px) {
     font-size: 15px;
     line-height: 24px;
   }
 }
+
+.frontend-main {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.site-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: rgb(0, 0, 0);
+}
+
+.site-background__image,
+.site-background__overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.site-background__image {
+  inset: -24px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease;
+  opacity: 0;
+
+  &[data-has-image='true'] {
+    opacity: 1;
+  }
+}
+
+.site-background__overlay {
+  background: rgb(0, 0, 0);
+  transition: opacity 250ms ease;
+}
+
+/* site-background icon removed (keep background only) */
 
 img {
   max-width: 100%;
