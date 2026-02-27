@@ -29,7 +29,8 @@ export const testPost = {
       attribution: 'Charles Eames',
     },
   ],
-} satisfies Pick<Post, 'title' | 'slug' | 'excerpt' | 'layout'>
+  status: 'published',
+} satisfies Pick<Post, 'title' | 'slug' | 'excerpt' | 'layout' | 'status'>
 
 export async function seedTestPost(): Promise<void> {
   const payload = await getPayload({ config })

@@ -3,14 +3,12 @@ import type { CollectionConfig } from 'payload'
 import { LayoutBlocks } from '@/blocks/layout'
 import { beforeValidatePopulateSlug } from '@/hooks/beforeValidatePopulateSlug'
 
-export const Posts: CollectionConfig = {
-  slug: 'posts',
+export const Projects: CollectionConfig = {
+  slug: 'projects',
   access: {
     read: ({ req }) => {
-      // Admin users can read everything
       if (req.user) return true
 
-      // Public can only read published posts
       return {
         status: {
           equals: 'published',
@@ -20,7 +18,7 @@ export const Posts: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'slug', 'updatedAt'],
+    defaultColumns: ['title', 'slug', 'status', 'updatedAt'],
   },
   hooks: {
     beforeValidate: [beforeValidatePopulateSlug({ sourceField: 'title' })],
@@ -44,6 +42,26 @@ export const Posts: CollectionConfig = {
     {
       name: 'excerpt',
       type: 'textarea',
+    },
+    {
+      name: 'techStack',
+      type: 'array',
+      minRows: 0,
+      fields: [
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+        },
+      ],
+      admin: {
+        description: 'Simple list of tech used (e.g. Rust, Next.js, Postgres).',
+      },
+    },
+    {
+      name: 'featuredImage',
+      type: 'upload',
+      relationTo: 'media',
     },
     {
       name: 'status',

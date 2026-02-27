@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     posts: Post;
+    projects: Project;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -178,6 +180,89 @@ export interface Post {
    */
   slug: string;
   excerpt?: string | null;
+  status: 'draft' | 'published';
+  publishedAt?: string | null;
+  layout: (
+    | {
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'content';
+      }
+    | {
+        media: number | Media;
+        caption?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'media';
+      }
+    | {
+        cards: {
+          title: string;
+          description?: string | null;
+          link?: string | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'grid';
+      }
+    | {
+        language: 'typescript' | 'javascript' | 'tsx' | 'jsx' | 'json' | 'bash' | 'markdown' | 'css' | 'html' | 'text';
+        code: string;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'code';
+      }
+    | {
+        quote: string;
+        attribution?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'quote';
+      }
+  )[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  title: string;
+  /**
+   * Generated from title if omitted.
+   */
+  slug: string;
+  excerpt?: string | null;
+  /**
+   * Simple list of tech used (e.g. Rust, Next.js, Postgres).
+   */
+  techStack?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  featuredImage?: (number | null) | Media;
+  status: 'draft' | 'published';
+  publishedAt?: string | null;
   layout: (
     | {
         content: {
@@ -270,6 +355,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'posts';
         value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -363,6 +452,77 @@ export interface PostsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   excerpt?: T;
+  status?: T;
+  publishedAt?: T;
+  layout?:
+    | T
+    | {
+        content?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        media?:
+          | T
+          | {
+              media?: T;
+              caption?: T;
+              id?: T;
+              blockName?: T;
+            };
+        grid?:
+          | T
+          | {
+              cards?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    link?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        code?:
+          | T
+          | {
+              language?: T;
+              code?: T;
+              id?: T;
+              blockName?: T;
+            };
+        quote?:
+          | T
+          | {
+              quote?: T;
+              attribution?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  techStack?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  featuredImage?: T;
+  status?: T;
+  publishedAt?: T;
   layout?:
     | T
     | {
