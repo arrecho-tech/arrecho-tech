@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 import { getPayload } from 'payload'
 
 import config from '../../src/payload.config.js'
@@ -6,6 +9,10 @@ const SITE_SETTINGS_SLUG = 'siteSettings' as const
 const TEST_MEDIA_ALT_PREFIX = '[e2e] site-settings-bg'
 
 let seededMediaIDs: number[] = []
+
+function fixturePath(name: string) {
+  return path.resolve(process.cwd(), 'tests', 'fixtures', name)
+}
 
 export async function seedSiteSettingsWithBackground(): Promise<void> {
   const payload = await getPayload({ config })
@@ -19,12 +26,19 @@ export async function seedSiteSettingsWithBackground(): Promise<void> {
     },
   })
 
+  const firstPath = fixturePath('bg1.png')
+  const secondPath = fixturePath('bg2.png')
+
   const firstMedia = await payload.create({
     collection: 'media',
     data: {
       alt: `${TEST_MEDIA_ALT_PREFIX} 1`,
-      url: '/brand/logo-circle.svg',
-      mimeType: 'image/svg+xml',
+    },
+    file: {
+      data: fs.readFileSync(firstPath),
+      mimetype: 'image/png',
+      name: 'bg1.png',
+      size: fs.statSync(firstPath).size,
     },
   })
 
@@ -32,8 +46,12 @@ export async function seedSiteSettingsWithBackground(): Promise<void> {
     collection: 'media',
     data: {
       alt: `${TEST_MEDIA_ALT_PREFIX} 2`,
-      url: '/brand/logo-square.svg',
-      mimeType: 'image/svg+xml',
+    },
+    file: {
+      data: fs.readFileSync(secondPath),
+      mimetype: 'image/png',
+      name: 'bg2.png',
+      size: fs.statSync(secondPath).size,
     },
   })
 
