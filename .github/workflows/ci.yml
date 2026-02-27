@@ -42,8 +42,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
 
+      # setup-node's pnpm cache requires pnpm to already be available on PATH.
+      # pnpm/action-setup ensures that before we run installs.
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
