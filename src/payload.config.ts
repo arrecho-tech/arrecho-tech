@@ -19,6 +19,21 @@ const emailFromAddress = process.env.SMTP_FROM_ADDRESS || process.env.SMTP_USER
 export default buildConfig({
   admin: {
     user: Users.slug,
+    meta: {
+      titleSuffix: '— Arrecho Tech',
+      icons: {
+        icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+      },
+      openGraph: {
+        images: ['/brand/logo-square.svg'],
+      },
+    },
+    components: {
+      graphics: {
+        Logo: '/components/admin/Logo#Logo',
+        Icon: '/components/admin/Icon#Icon',
+      },
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },

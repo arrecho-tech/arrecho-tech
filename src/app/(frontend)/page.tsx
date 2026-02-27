@@ -19,15 +19,10 @@ export default async function HomePage() {
     <div className="home">
       <div className="content">
         <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
+          <source srcSet="/brand/logo-circle.svg" />
+          <Image alt="Arrecho Tech" height={65} src="/brand/logo-circle.svg" width={65} />
         </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
+        {!user && <h1>Welcome to Arrecho Tech.</h1>}
         {user && <h1>Welcome back, {user.email}</h1>}
         <div className="links">
           <a
@@ -36,15 +31,10 @@ export default async function HomePage() {
             rel="noopener noreferrer"
             target="_blank"
           >
-            Go to admin panel
+            Admin
           </a>
-          <a
-            className="docs"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
+          <a className="docs" href="https://payloadcms.com/docs" rel="noopener noreferrer" target="_blank">
+            Payload Docs
           </a>
         </div>
       </div>
