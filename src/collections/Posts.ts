@@ -1,6 +1,6 @@
 import type { CollectionBeforeValidateHook, CollectionConfig } from 'payload'
 
-import { CodeBlock, ContentBlock, GridBlock, MediaBlock, QuoteBlock } from '@/blocks/layoutBlocks'
+import { LayoutBlocks } from '@/blocks/layout'
 
 const formatSlug = (value: string): string =>
   value
@@ -64,7 +64,7 @@ export const Posts: CollectionConfig = {
       type: 'blocks',
       required: true,
       minRows: 1,
-      blocks: [ContentBlock, MediaBlock, GridBlock, CodeBlock, QuoteBlock],
+      blocks: LayoutBlocks,
     },
   ],
 }
