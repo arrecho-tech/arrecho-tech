@@ -13,7 +13,7 @@ This repository contains the **Arrecho Tech** website + CMS.
 
 ## Local development
 
-### Option A — pnpm on host + Postgres via Docker
+### pnpm on host + Postgres via Docker
 
 1. Clone the repo
 
@@ -46,7 +46,7 @@ This repository contains the **Arrecho Tech** website + CMS.
    - Frontend: http://localhost:3000
    - Admin: http://localhost:3000/admin
 
-### Option B — app + Postgres (all-in-Docker)
+### App + Postgres (all-in-Docker)
 
 ```bash
 git clone https://github.com/arrecho-tech/arrecho-tech.git
