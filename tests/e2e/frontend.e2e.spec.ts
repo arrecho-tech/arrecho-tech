@@ -11,10 +11,12 @@ test.describe('Frontend', () => {
   test('can go on homepage', async ({ page }) => {
     await page.goto('http://localhost:3000')
 
-    await expect(page).toHaveTitle(/Payload Blank Template/)
+    // Branding may change, but site should include our name
+    await expect(page).toHaveTitle(/Arrecho Tech/)
 
     const heading = page.locator('h1').first()
 
-    await expect(heading).toHaveText('Welcome to your new project.')
+    // When not logged in, homepage welcomes visitors
+    await expect(heading).toHaveText(/Welcome to Arrecho Tech\./)
   })
 })
