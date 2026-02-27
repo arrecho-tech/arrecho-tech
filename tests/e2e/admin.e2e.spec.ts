@@ -5,7 +5,7 @@ import { seedTestUser, cleanupTestUser, testUser } from '../helpers/seedUser'
 test.describe('Admin Panel', () => {
   let page: Page
 
-  test.beforeAll(async ({ browser }, testInfo) => {
+  test.beforeAll(async ({ browser }) => {
     await seedTestUser()
 
     const context = await browser.newContext()
@@ -37,5 +37,13 @@ test.describe('Admin Panel', () => {
     await expect(page).toHaveURL(/\/admin\/collections\/users\/[a-zA-Z0-9-_]+/)
     const editViewArtifact = page.locator('input[name="email"]')
     await expect(editViewArtifact).toBeVisible()
+  })
+
+  test('can access post collection create view', async () => {
+    await page.goto('http://localhost:3000/admin/collections/posts/create')
+    await expect(page).toHaveURL('http://localhost:3000/admin/collections/posts/create')
+
+    await expect(page.locator('input[name="title"]')).toBeVisible()
+    await expect(page.locator('input[name="slug"]')).toBeVisible()
   })
 })

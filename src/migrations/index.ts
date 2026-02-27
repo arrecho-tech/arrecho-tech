@@ -1,5 +1,6 @@
 import * as migration_20260226_203035_initial from './20260226_203035_initial';
 import * as migration_20260227_050022 from './20260227_050022';
+import * as migration_20260227_163453_add_posts_layout_blocks from './20260227_163453_add_posts_layout_blocks';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20260227_050022.up,
     down: migration_20260227_050022.down,
-    name: '20260227_050022'
+    name: '20260227_050022',
+  },
+  {
+    up: migration_20260227_163453_add_posts_layout_blocks.up,
+    down: migration_20260227_163453_add_posts_layout_blocks.down,
+    name: '20260227_163453_add_posts_layout_blocks'
   },
 ];
