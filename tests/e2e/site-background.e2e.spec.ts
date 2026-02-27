@@ -29,6 +29,7 @@ test.describe('Site background', () => {
       })
       .not.toBe('none')
 
-    await expect(page.getByTestId('site-background-icon')).toBeVisible()
+    // icon/parallax intentionally not asserted (background-only mode)
+
   })
 })

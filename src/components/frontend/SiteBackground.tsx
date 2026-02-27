@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import React, { useEffect, useMemo, useState } from 'react'
 
 type SiteBackgroundProps = {
@@ -106,16 +105,6 @@ export function SiteBackground({
     }
   }, [parallaxEnabled, prefersReducedMotion])
 
-  const iconTransform = useMemo(() => {
-    const intensity = Math.max(0, parallaxIntensity ?? 16)
-
-    if (prefersReducedMotion || parallaxEnabled === false || intensity === 0) {
-      return 'translate3d(-50%, -50%, 0)'
-    }
-
-    return `translate3d(calc(-50% + ${pointerOffset.x * intensity}px), calc(-50% + ${pointerOffset.y * intensity}px), 0)`
-  }, [parallaxEnabled, parallaxIntensity, pointerOffset.x, pointerOffset.y, prefersReducedMotion])
-
   const backgroundTransform = useMemo(() => {
     const intensity = Math.max(0, parallaxIntensity ?? 16)
 
@@ -147,18 +136,6 @@ export function SiteBackground({
           style={{ opacity: resolvedOverlayOpacity }}
         />
       )}
-
-      <Image
-        alt=""
-        aria-hidden
-        className="site-background__icon"
-        data-testid="site-background-icon"
-        height={220}
-        priority
-        src="/brand/logo-circle.svg"
-        style={{ transform: iconTransform }}
-        width={220}
-      />
     </div>
   )
 }

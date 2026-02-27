@@ -77,15 +77,7 @@ body {
   transition: opacity 250ms ease;
 }
 
-.site-background__icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(24vw, 220px);
-  height: auto;
-  opacity: 0.26;
-  transition: transform 250ms ease;
-}
+/* site-background icon removed (keep background only) */
 
 img {
   max-width: 100%;
