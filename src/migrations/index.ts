@@ -1,6 +1,7 @@
-import * as migration_20260226_203035_initial from './20260226_203035_initial';
-import * as migration_20260227_050022 from './20260227_050022';
-import * as migration_20260227_163453_add_posts_layout_blocks from './20260227_163453_add_posts_layout_blocks';
+import * as migration_20260226_203035_initial from './20260226_203035_initial'
+import * as migration_20260227_050022 from './20260227_050022'
+import * as migration_20260227_163453_add_posts_layout_blocks from './20260227_163453_add_posts_layout_blocks'
+import * as migration_20260227_164041_add_site_settings_background from './20260227_164041_add_site_settings_background'
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20260227_163453_add_posts_layout_blocks.up,
     down: migration_20260227_163453_add_posts_layout_blocks.down,
-    name: '20260227_163453_add_posts_layout_blocks'
+    name: '20260227_163453_add_posts_layout_blocks',
   },
-];
+  {
+    up: migration_20260227_164041_add_site_settings_background.up,
+    down: migration_20260227_164041_add_site_settings_background.down,
+    name: '20260227_164041_add_site_settings_background',
+  },
+]
