@@ -1,31 +1,7 @@
-import type { CollectionBeforeValidateHook, CollectionConfig } from 'payload'
+import type { CollectionConfig } from 'payload'
 
 import { LayoutBlocks } from '@/blocks/layout'
-
-const formatSlug = (value: string): string =>
-  value
-    .toLowerCase()
-    .trim()
-    .replace(/['"]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '')
-
-const populateSlug: CollectionBeforeValidateHook = ({ data }) => {
-  if (!data) {
-    return data
-  }
-
-  if (typeof data.slug === 'string') {
-    data.slug = formatSlug(data.slug)
-    return data
-  }
-
-  if (typeof data.title === 'string') {
-    data.slug = formatSlug(data.title)
-  }
-
-  return data
-}
+import { beforeValidatePopulateSlug } from '@/hooks/beforeValidatePopulateSlug'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -37,7 +13,7 @@ export const Posts: CollectionConfig = {
     defaultColumns: ['title', 'slug', 'updatedAt'],
   },
   hooks: {
-    beforeValidate: [populateSlug],
+    beforeValidate: [beforeValidatePopulateSlug({ sourceField: 'title' })],
   },
   fields: [
     {
