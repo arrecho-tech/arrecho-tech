@@ -6,8 +6,8 @@ export function Logo() {
     <Image
       src="/brand/logo-circle.svg"
       alt="Arrecho Tech"
-      width={48}
-      height={48}
+      width={144}
+      height={144}
       priority
     />
   )

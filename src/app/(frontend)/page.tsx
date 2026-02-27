@@ -19,13 +19,13 @@ export default async function HomePage() {
           <source srcSet="/brand/logo-circle.svg" />
           <Image
             alt="Arrecho Tech"
-            height={65}
+            height={130}
             src="/brand/logo-circle.svg"
-            width={65}
+            width={130}
           />
         </picture>
         {!user && <h1>Welcome to Arrecho Tech.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
+        {user && <h1>Welcome back, {user.firstName}</h1>}
       </div>
     </div>
   )
