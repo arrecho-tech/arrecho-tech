@@ -11,9 +11,11 @@ This repository contains the **Arrecho Tech** website + CMS.
 - Database: Postgres
 - Media storage (prod): Vercel Blob
 
-## Quick start (local)
+## Local development
 
-To run the app locally:
+Choose one:
+
+### Option A — pnpm on host + Postgres via Docker
 
 1. Clone the repo
 
@@ -28,35 +30,37 @@ To run the app locally:
    cp .env.example .env
    ```
 
-3. Install + start dev server
+3. Start Postgres
+
+   ```bash
+   docker-compose up -d postgres
+   ```
+
+4. Install + start dev server
 
    ```bash
    pnpm install
    pnpm dev
    ```
 
-4. Open
+5. Open
 
    - Frontend: http://localhost:3000
    - Admin: http://localhost:3000/admin
 
-On first run, create your first admin user via the on-screen prompt.
+### Option B — app + Postgres (all-in-Docker)
 
-## Docker (optional)
+```bash
+git clone https://github.com/arrecho-tech/arrecho-tech.git
+cd arrecho-tech
+cp .env.example .env
+docker-compose up -d
+```
 
-This repo includes a `docker-compose.yml` for local Postgres (and can also run the app in Docker).
+Open:
 
-- Run Postgres only (recommended):
-
-  ```bash
-  docker-compose up -d postgres
-  ```
-
-- Or run app + Postgres in Docker:
-
-  ```bash
-  docker-compose up -d
-  ```
+- Frontend: http://localhost:3000
+- Admin: http://localhost:3000/admin
 
 Default local DB credentials:
 
