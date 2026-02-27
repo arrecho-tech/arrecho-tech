@@ -13,8 +13,6 @@ This repository contains the **Arrecho Tech** website + CMS.
 
 ## Local development
 
-Choose one:
-
 ### Option A — pnpm on host + Postgres via Docker
 
 1. Clone the repo
