@@ -98,31 +98,40 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
   );
 
   -- Constraints / indexes
-  ALTER TABLE "projects" ADD CONSTRAINT IF NOT EXISTS "projects_featured_image_id_media_id_fk"
+  ALTER TABLE "projects"
+    ADD CONSTRAINT "projects_featured_image_id_media_id_fk"
     FOREIGN KEY ("featured_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
 
-  ALTER TABLE "projects_tech_stack" ADD CONSTRAINT IF NOT EXISTS "projects_tech_stack_parent_id_fk"
+  ALTER TABLE "projects_tech_stack"
+    ADD CONSTRAINT "projects_tech_stack_parent_id_fk"
     FOREIGN KEY ("_parent_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
 
-  ALTER TABLE "projects_blocks_content" ADD CONSTRAINT IF NOT EXISTS "projects_blocks_content_parent_id_fk"
+  ALTER TABLE "projects_blocks_content"
+    ADD CONSTRAINT "projects_blocks_content_parent_id_fk"
     FOREIGN KEY ("_parent_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
 
-  ALTER TABLE "projects_blocks_media" ADD CONSTRAINT IF NOT EXISTS "projects_blocks_media_media_id_media_id_fk"
+  ALTER TABLE "projects_blocks_media"
+    ADD CONSTRAINT "projects_blocks_media_media_id_media_id_fk"
     FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
 
-  ALTER TABLE "projects_blocks_media" ADD CONSTRAINT IF NOT EXISTS "projects_blocks_media_parent_id_fk"
+  ALTER TABLE "projects_blocks_media"
+    ADD CONSTRAINT "projects_blocks_media_parent_id_fk"
     FOREIGN KEY ("_parent_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
 
-  ALTER TABLE "projects_blocks_grid" ADD CONSTRAINT IF NOT EXISTS "projects_blocks_grid_parent_id_fk"
+  ALTER TABLE "projects_blocks_grid"
+    ADD CONSTRAINT "projects_blocks_grid_parent_id_fk"
     FOREIGN KEY ("_parent_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
 
-  ALTER TABLE "projects_blocks_grid_cards" ADD CONSTRAINT IF NOT EXISTS "projects_blocks_grid_cards_parent_id_fk"
+  ALTER TABLE "projects_blocks_grid_cards"
+    ADD CONSTRAINT "projects_blocks_grid_cards_parent_id_fk"
     FOREIGN KEY ("_parent_id") REFERENCES "public"."projects_blocks_grid"("id") ON DELETE cascade ON UPDATE no action;
 
-  ALTER TABLE "projects_blocks_code" ADD CONSTRAINT IF NOT EXISTS "projects_blocks_code_parent_id_fk"
+  ALTER TABLE "projects_blocks_code"
+    ADD CONSTRAINT "projects_blocks_code_parent_id_fk"
     FOREIGN KEY ("_parent_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
 
-  ALTER TABLE "projects_blocks_quote" ADD CONSTRAINT IF NOT EXISTS "projects_blocks_quote_parent_id_fk"
+  ALTER TABLE "projects_blocks_quote"
+    ADD CONSTRAINT "projects_blocks_quote_parent_id_fk"
     FOREIGN KEY ("_parent_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
 
   CREATE UNIQUE INDEX IF NOT EXISTS "projects_slug_idx" ON "projects" USING btree ("slug");
