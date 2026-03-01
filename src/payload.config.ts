@@ -7,6 +7,7 @@ import sharp from 'sharp'
 
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -82,6 +83,19 @@ export default buildConfig({
       clientUploads: true,
       // Set by Vercel when Blob is enabled for the project
       token: process.env.BLOB_READ_WRITE_TOKEN,
+    }),
+    formBuilderPlugin({
+      // For now we’re not using this on the public frontend, so keep it admin-only.
+      formOverrides: {
+        access: {
+          read: ({ req: { user } }) => !!user,
+        },
+      },
+      formSubmissionOverrides: {
+        access: {
+          read: ({ req: { user } }) => !!user,
+        },
+      },
     }),
   ],
 })
