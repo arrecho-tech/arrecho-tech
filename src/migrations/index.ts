@@ -4,6 +4,7 @@ import * as migration_20260227_163453_add_posts_layout_blocks from './20260227_1
 import * as migration_20260227_164041_add_site_settings_background from './20260227_164041_add_site_settings_background'
 import * as migration_20260227_183200_add_projects_and_publish_status from './20260227_183200_add_projects_and_publish_status'
 import * as migration_20260227_214500_fix_locked_documents_projects_rel from './20260227_214500_fix_locked_documents_projects_rel'
+import * as migration_20260302_004900_fix_locked_documents_forms_rels from './20260302_004900_fix_locked_documents_forms_rels'
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20260227_214500_fix_locked_documents_projects_rel.up,
     down: migration_20260227_214500_fix_locked_documents_projects_rel.down,
     name: '20260227_214500_fix_locked_documents_projects_rel',
+  },
+  {
+    up: migration_20260302_004900_fix_locked_documents_forms_rels.up,
+    down: migration_20260302_004900_fix_locked_documents_forms_rels.down,
+    name: '20260302_004900_fix_locked_documents_forms_rels',
   },
 ]
