@@ -1,12 +1,11 @@
 import { MigrateDownArgs, MigrateUpArgs, sql } from '@payloadcms/db-postgres'
 
 // Minimal schema for @payloadcms/plugin-form-builder.
-// This project uses explicit SQL migrations, so adding the plugin requires
+// This repo uses explicit SQL migrations, so adding the plugin requires
 // creating the underlying tables.
 //
-// NOTE: This migration focuses on the tables needed for the Admin UI to load
-// (e.g. list views). It covers the core collection tables and the most common
-// sub-tables (arrays / blocks) for the default enabled blocks.
+// NOTE: Postgres does NOT support `ADD CONSTRAINT IF NOT EXISTS`, so we guard
+// constraint creation using DO blocks (same style as other migrations here).
 
 export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -48,10 +47,18 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
     "message" jsonb
   );
 
-  ALTER TABLE "forms_emails"
-    ADD CONSTRAINT IF NOT EXISTS "forms_emails_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_constraint
+      WHERE conname = 'forms_emails_parent_id_fk'
+    ) THEN
+      ALTER TABLE "forms_emails"
+        ADD CONSTRAINT "forms_emails_parent_id_fk"
+        FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
+        ON DELETE cascade ON UPDATE no action;
+    END IF;
+  END $$;
 
   CREATE INDEX IF NOT EXISTS "forms_emails_order_idx" ON "forms_emails" USING btree ("_order");
   CREATE INDEX IF NOT EXISTS "forms_emails_parent_id_idx" ON "forms_emails" USING btree ("_parent_id");
@@ -224,56 +231,47 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
   );
 
   -- FKs for blocks -> forms
-  ALTER TABLE "forms_blocks_text"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_text_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_textarea"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_textarea_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_number"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_number_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_email"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_email_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_state"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_state_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_country"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_country_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_checkbox"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_checkbox_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_message"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_message_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_radio"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_radio_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_select"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_select_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id")
-    ON DELETE cascade ON UPDATE no action;
+  DO $$
+  BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_text_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_text" ADD CONSTRAINT "forms_blocks_text_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_textarea_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_textarea" ADD CONSTRAINT "forms_blocks_textarea_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_number_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_number" ADD CONSTRAINT "forms_blocks_number_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_email_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_email" ADD CONSTRAINT "forms_blocks_email_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_state_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_state" ADD CONSTRAINT "forms_blocks_state_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_country_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_country" ADD CONSTRAINT "forms_blocks_country_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_checkbox_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_checkbox" ADD CONSTRAINT "forms_blocks_checkbox_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_message_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_message" ADD CONSTRAINT "forms_blocks_message_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_radio_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_radio" ADD CONSTRAINT "forms_blocks_radio_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_select_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_select" ADD CONSTRAINT "forms_blocks_select_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
 
-  -- FKs for options -> parent block row (varchar id)
-  ALTER TABLE "forms_blocks_radio_options"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_radio_options_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms_blocks_radio"("id")
-    ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "forms_blocks_select_options"
-    ADD CONSTRAINT IF NOT EXISTS "forms_blocks_select_options_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."forms_blocks_select"("id")
-    ON DELETE cascade ON UPDATE no action;
+    -- FKs for options -> parent block row (varchar id)
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_radio_options_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_radio_options" ADD CONSTRAINT "forms_blocks_radio_options_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms_blocks_radio"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'forms_blocks_select_options_parent_id_fk') THEN
+      ALTER TABLE "forms_blocks_select_options" ADD CONSTRAINT "forms_blocks_select_options_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."forms_blocks_select"("id") ON DELETE cascade ON UPDATE no action;
+    END IF;
+  END $$;
 
   -- Indexes for blocks
   CREATE INDEX IF NOT EXISTS "forms_blocks_text_order_idx" ON "forms_blocks_text" USING btree ("_order");
@@ -332,10 +330,18 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
     "created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
 
-  ALTER TABLE "form_submissions"
-    ADD CONSTRAINT IF NOT EXISTS "form_submissions_form_id_forms_id_fk"
-    FOREIGN KEY ("form_id") REFERENCES "public"."forms"("id")
-    ON DELETE set null ON UPDATE no action;
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_constraint
+      WHERE conname = 'form_submissions_form_id_forms_id_fk'
+    ) THEN
+      ALTER TABLE "form_submissions"
+        ADD CONSTRAINT "form_submissions_form_id_forms_id_fk"
+        FOREIGN KEY ("form_id") REFERENCES "public"."forms"("id")
+        ON DELETE set null ON UPDATE no action;
+    END IF;
+  END $$;
 
   CREATE INDEX IF NOT EXISTS "form_submissions_form_id_idx" ON "form_submissions" USING btree ("form_id");
   CREATE INDEX IF NOT EXISTS "form_submissions_updated_at_idx" ON "form_submissions" USING btree ("updated_at");
@@ -349,10 +355,18 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
     "value" varchar NOT NULL
   );
 
-  ALTER TABLE "form_submissions_submission_data"
-    ADD CONSTRAINT IF NOT EXISTS "form_submissions_submission_data_parent_id_fk"
-    FOREIGN KEY ("_parent_id") REFERENCES "public"."form_submissions"("id")
-    ON DELETE cascade ON UPDATE no action;
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_constraint
+      WHERE conname = 'form_submissions_submission_data_parent_id_fk'
+    ) THEN
+      ALTER TABLE "form_submissions_submission_data"
+        ADD CONSTRAINT "form_submissions_submission_data_parent_id_fk"
+        FOREIGN KEY ("_parent_id") REFERENCES "public"."form_submissions"("id")
+        ON DELETE cascade ON UPDATE no action;
+    END IF;
+  END $$;
 
   CREATE INDEX IF NOT EXISTS "form_submissions_submission_data_order_idx" ON "form_submissions_submission_data" USING btree ("_order");
   CREATE INDEX IF NOT EXISTS "form_submissions_submission_data_parent_id_idx" ON "form_submissions_submission_data" USING btree ("_parent_id");
