@@ -7,6 +7,7 @@ import sharp from 'sharp'
 
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -82,6 +83,41 @@ export default buildConfig({
       clientUploads: true,
       // Set by Vercel when Blob is enabled for the project
       token: process.env.BLOB_READ_WRITE_TOKEN,
+    }),
+    formBuilderPlugin({
+      // For now we’re not using this on the public frontend, so keep it admin-only.
+      formOverrides: {
+        access: {
+          read: ({ req: { user } }) => !!user,
+        },
+        fields: ({ defaultFields }) => {
+          return [
+            {
+              name: 'webhookCategory',
+              type: 'text',
+              label: 'Webhook Category',
+              admin: {
+                description:
+                  'Optional. If set, submissions will POST to the matching category endpoint configured in Site Settings → Form Webhooks.',
+              },
+            },
+            ...defaultFields,
+          ]
+        },
+      },
+      formSubmissionOverrides: {
+        access: {
+          read: ({ req: { user } }) => !!user,
+        },
+        hooks: {
+          afterChange: [
+            async (args) => {
+              const { sendFormWebhook } = await import('./hooks/sendFormWebhook')
+              return sendFormWebhook(args)
+            },
+          ],
+        },
+      },
     }),
   ],
 })
