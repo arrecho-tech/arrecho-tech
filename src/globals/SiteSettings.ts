@@ -31,6 +31,57 @@ export const SiteSettings: GlobalConfig = {
     },
     {
       type: 'collapsible',
+      label: 'Form Webhooks',
+      fields: [
+        {
+          name: 'defaultFormWebhookCategory',
+          label: 'Default Category',
+          type: 'text',
+          admin: {
+            description: 'If a form does not specify a webhook category, this one will be used.',
+          },
+        },
+        {
+          name: 'formWebhooks',
+          label: 'Endpoints',
+          type: 'array',
+          labels: {
+            singular: 'Endpoint',
+            plural: 'Endpoints',
+          },
+          fields: [
+            {
+              name: 'enabled',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Enabled',
+            },
+            {
+              name: 'category',
+              type: 'text',
+              required: true,
+              label: 'Category',
+            },
+            {
+              name: 'url',
+              type: 'text',
+              required: true,
+              label: 'URL',
+            },
+            {
+              name: 'secret',
+              type: 'text',
+              label: 'Secret (optional)',
+              admin: {
+                description: 'Sent as the x-webhook-secret header.',
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'collapsible',
       label: 'Appearance',
       fields: [
         {

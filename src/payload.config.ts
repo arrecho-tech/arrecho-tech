@@ -90,10 +90,32 @@ export default buildConfig({
         access: {
           read: ({ req: { user } }) => !!user,
         },
+        fields: ({ defaultFields }) => {
+          return [
+            {
+              name: 'webhookCategory',
+              type: 'text',
+              label: 'Webhook Category',
+              admin: {
+                description:
+                  'Optional. If set, submissions will POST to the matching category endpoint configured in Site Settings → Form Webhooks.',
+              },
+            },
+            ...defaultFields,
+          ]
+        },
       },
       formSubmissionOverrides: {
         access: {
           read: ({ req: { user } }) => !!user,
+        },
+        hooks: {
+          afterChange: [
+            async (args) => {
+              const { sendFormWebhook } = await import('./hooks/sendFormWebhook')
+              return sendFormWebhook(args)
+            },
+          ],
         },
       },
     }),
