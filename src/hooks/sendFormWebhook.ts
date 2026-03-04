@@ -1,5 +1,3 @@
-import type { AfterChangeHook } from 'payload'
-
 import { primarySiteSettingsSlug } from '../globals/SiteSettings'
 
 type WebhookEndpoint = {
@@ -33,7 +31,15 @@ type SiteSettingsDoc = {
   formWebhooks?: WebhookEndpoint[]
 }
 
-export const sendFormWebhook: AfterChangeHook<FormSubmissionDoc> = async ({ doc, req }) => {
+export const sendFormWebhook = async ({
+  doc,
+  req,
+}: {
+  doc: FormSubmissionDoc
+  // Payload's req type is not exported cleanly in this repo; keep this hook
+  // compatible without pulling in internal types.
+  req: unknown
+}) => {
   try {
     const payload = req.payload
     if (!payload) return doc

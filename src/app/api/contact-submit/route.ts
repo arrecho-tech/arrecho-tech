@@ -9,24 +9,37 @@ import {
   type SanitizedContactForm,
 } from '@/utils/contactForm'
 
-type SubmissionDataRow = { field: string; value: unknown }
+type SubmissionDataRow = { field: string; value: string }
 
 type Body = {
-  submissionData?: SubmissionDataRow[]
+  submissionData?: Array<{ field: string; value: unknown }>
   submissionDataMap?: Record<string, unknown>
+}
+
+function toStringValue(value: unknown): string {
+  if (typeof value === 'string') return value
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (value == null) return ''
+  try {
+    return JSON.stringify(value)
+  } catch {
+    return String(value)
+  }
 }
 
 function toRows(body: Body, allowed: Set<string>): SubmissionDataRow[] {
   if (Array.isArray(body.submissionData)) {
     return body.submissionData
       .filter((r) => r && typeof r.field === 'string' && allowed.has(r.field))
-      .map((r) => ({ field: r.field, value: r.value }))
+      .map((r) => ({ field: r.field, value: toStringValue(r.value) }))
+      .filter((r) => r.value.length > 0)
   }
 
   if (body.submissionDataMap && typeof body.submissionDataMap === 'object') {
     return Object.entries(body.submissionDataMap)
       .filter(([k]) => allowed.has(k))
-      .map(([field, value]) => ({ field, value }))
+      .map(([field, value]) => ({ field, value: toStringValue(value) }))
+      .filter((r) => r.value.length > 0)
   }
 
   return []
@@ -51,11 +64,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'empty_submission' }, { status: 400 })
   }
 
+  const formID = typeof form.id === 'number' ? form.id : Number(form.id)
+  if (!Number.isFinite(formID)) {
+    return NextResponse.json({ ok: false, error: 'invalid_form_id' }, { status: 500 })
+  }
+
   const submission = await payload.create({
     collection: 'form-submissions',
     overrideAccess: true,
     data: {
-      form: form.id,
+      form: formID,
       submissionData,
     },
   })
