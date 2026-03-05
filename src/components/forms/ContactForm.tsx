@@ -28,6 +28,28 @@ function getLabel(label: unknown): string {
   return ''
 }
 
+function extractText(value: unknown): string {
+  if (typeof value === 'string') return value
+  if (!value || typeof value !== 'object') return ''
+
+  // Lexical richText often looks like { root: { children: [...] } }
+  const root = (value as { root?: unknown }).root
+  const out: string[] = []
+
+  const walk = (node: unknown) => {
+    if (!node || typeof node !== 'object') return
+    const maybeText = (node as { text?: unknown }).text
+    if (typeof maybeText === 'string') out.push(maybeText)
+
+    const children = (node as { children?: unknown }).children
+    if (Array.isArray(children)) children.forEach(walk)
+  }
+
+  walk(root)
+
+  return out.join('').replace(/\s+/g, ' ').trim()
+}
+
 function Field({ field, value, setValue }: {
   field: ContactFormFieldBlock
   value: unknown
@@ -39,7 +61,14 @@ function Field({ field, value, setValue }: {
   if (!name) return null
 
   if (field.blockType === 'message') {
-    return null
+    const text = extractText(field.message)
+    if (!text) return null
+
+    return (
+      <div className="rounded-md border border-slate-200 bg-white/5 p-4 text-sm text-slate-200 dark:border-slate-800">
+        {text}
+      </div>
+    )
   }
 
   if (field.blockType === 'textarea') {
@@ -172,14 +201,14 @@ export function ContactForm({ form }: Props) {
 
   if (status.kind === 'success') {
     return (
-      <div aria-label="contact-received" className="mt-10 w-full max-w-2xl rounded-md border border-slate-200 bg-white/5 p-6 text-sm dark:border-slate-800">
+      <div aria-label="contact-received" className="mt-10 w-full max-w-3xl rounded-md border border-slate-200 bg-white/5 p-6 text-sm dark:border-slate-800">
         Received — thanks! We’ll get back to you soon.
       </div>
     )
   }
 
   return (
-    <form onSubmit={onSubmit} aria-label="contact-form" className="mt-10 w-full max-w-2xl">
+    <form onSubmit={onSubmit} aria-label="contact-form" className="mt-10 w-full max-w-3xl">
       <h2 className="mb-6 text-2xl font-semibold tracking-tight">Contact</h2>
 
       <div className="grid gap-4">
