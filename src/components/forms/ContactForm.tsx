@@ -60,7 +60,7 @@ function Field({ field, value, setValue }: {
     if (!text) return null
 
     return (
-      <div className="rounded-md border border-slate-200 bg-white/5 p-4 text-sm text-slate-200 dark:border-slate-800">
+      <div className="rounded-md border border-neutral-200/20 bg-black/30 p-4 text-sm text-neutral-100 backdrop-blur-md dark:border-neutral-800/40">
         {text}
       </div>
     )
@@ -112,7 +112,7 @@ function Field({ field, value, setValue }: {
           required={Boolean(field.required)}
           value={typeof value === 'string' ? value : ''}
           onChange={(e) => setValue(e.target.value)}
-          className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-800"
+          className="flex h-10 w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-800"
         >
           <option value="">Select…</option>
           {(field.options ?? []).map((opt, idx) => (
