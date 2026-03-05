@@ -172,14 +172,14 @@ export function ContactForm({ form }: Props) {
 
   if (status.kind === 'success') {
     return (
-      <div aria-label="contact-received" className="mt-10 w-full max-w-xl rounded-md border border-slate-200 bg-white/5 p-6 text-sm dark:border-slate-800">
+      <div aria-label="contact-received" className="mt-10 w-full max-w-2xl rounded-md border border-slate-200 bg-white/5 p-6 text-sm dark:border-slate-800">
         Received — thanks! We’ll get back to you soon.
       </div>
     )
   }
 
   return (
-    <form onSubmit={onSubmit} aria-label="contact-form" className="mt-10 w-full max-w-xl">
+    <form onSubmit={onSubmit} aria-label="contact-form" className="mt-10 w-full max-w-2xl">
       <h2 className="mb-6 text-2xl font-semibold tracking-tight">Contact</h2>
 
       <div className="grid gap-4">
