@@ -38,7 +38,16 @@ export const sendFormWebhook = async ({
   doc: FormSubmissionDoc
   // Payload's req type is not exported cleanly in this repo; keep this hook
   // compatible without pulling in internal types.
-  req: unknown
+  req: {
+    payload?: {
+      logger: {
+        warn: (meta: unknown, message?: string) => void
+        error: (meta: unknown, message?: string) => void
+      }
+      findByID: (args: unknown) => Promise<unknown>
+      findGlobal: (args: unknown) => Promise<unknown>
+    }
+  }
 }) => {
   try {
     const payload = req.payload
