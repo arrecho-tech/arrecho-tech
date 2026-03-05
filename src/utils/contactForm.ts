@@ -17,6 +17,8 @@ export type ContactFormFieldBlock = {
   placeholder?: string
   defaultValue?: unknown
   options?: Array<{ label?: unknown; value?: string }>
+  // For blockType === 'message'
+  message?: unknown
 }
 
 export type SanitizedContactForm = {
@@ -40,6 +42,7 @@ type RawBlock = {
   placeholder?: string
   defaultValue?: unknown
   options?: unknown
+  message?: unknown
 }
 
 export async function findContactForm(payload: Payload): Promise<RawFormDoc | null> {
@@ -71,9 +74,12 @@ export function sanitizeContactForm(form: RawFormDoc): SanitizedContactForm {
       placeholder: b.placeholder,
       defaultValue: b.defaultValue,
       options: Array.isArray(b.options)
-        ? (b.options as Array<{ label?: unknown; value?: string }>).
-            map((o) => ({ label: o.label, value: o.value }))
+        ? (b.options as Array<{ label?: unknown; value?: string }>).map((o) => ({
+            label: o.label,
+            value: o.value,
+          }))
         : undefined,
+      message: b.message,
     }))
     .filter((b) =>
       [
