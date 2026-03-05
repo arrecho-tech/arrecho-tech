@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import React from 'react'
 
 import { ContactForm } from '@/components/forms/ContactForm'
+import { FadeIn } from '@/components/frontend/FadeIn'
 import config from '@/payload.config'
 import { findContactForm, sanitizeContactForm } from '@/utils/contactForm'
 import './styles.css'
@@ -18,16 +19,24 @@ export default async function HomePage() {
 
   return (
     <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="/brand/logo-circle.svg" />
-          <Image alt="Arrecho Tech" height={130} src="/brand/logo-circle.svg" width={130} />
-        </picture>
-        {!user && <h1>Welcome to Arrecho Tech.</h1>}
-        {user && <h1>Welcome back, {user.firstName}</h1>}
+      <section className="hero">
+        <div className="content">
+          <picture>
+            <source srcSet="/brand/logo-circle.svg" />
+            <Image alt="Arrecho Tech" height={130} src="/brand/logo-circle.svg" width={130} />
+          </picture>
+          {!user && <h1>Welcome to Arrecho Tech.</h1>}
+          {user && <h1>Welcome back, {user.firstName}</h1>}
+        </div>
+      </section>
 
-        {contactForm ? <ContactForm form={sanitizeContactForm(contactForm)} /> : null}
-      </div>
+      {contactForm ? (
+        <section className="contact">
+          <FadeIn>
+            <ContactForm form={sanitizeContactForm(contactForm)} />
+          </FadeIn>
+        </section>
+      ) : null}
     </div>
   )
 }
