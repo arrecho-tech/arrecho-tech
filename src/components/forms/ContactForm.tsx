@@ -2,6 +2,7 @@
 
 import React from 'react'
 
+import { Button } from '@/components/ui/button'
 import type { ContactFormFieldBlock, SanitizedContactForm } from '@/utils/contactForm'
 
 type Props = {
@@ -173,9 +174,9 @@ export function ContactForm({ form }: Props) {
           setValue={(v) => setValue(f.name || '', v)}
         />
       ))}
-      <button type="submit" disabled={status.kind === 'submitting'}>
+      <Button type="submit" disabled={status.kind === 'submitting'}>
         {status.kind === 'submitting' ? 'Sending…' : 'Send'}
-      </button>
+      </Button>
       {status.kind === 'error' && (
         <div role="alert" style={{ marginTop: 12 }}>
           Error: {status.message}

@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Keep any frontend-only globals here. */
+
+html,
+body {
+  height: 100%;
+}
+
+/* Preserve existing layout hook used by the SiteBackground shell */
+.main-viewport {
+  min-height: 100vh;
+}

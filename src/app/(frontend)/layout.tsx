@@ -8,6 +8,7 @@ import { siteSettingsSlugs } from '@/globals/SiteSettings'
 import config from '@/payload.config'
 import type { SiteSetting } from '@/payload-types'
 
+import './globals.css'
 import './styles.css'
 
 export const dynamic = 'force-dynamic'
