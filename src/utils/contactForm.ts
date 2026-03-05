@@ -24,12 +24,18 @@ export type ContactFormFieldBlock = {
 export type SanitizedContactForm = {
   id: number | string
   title: string
+  confirmationType?: 'message' | 'redirect' | string
+  confirmationMessage?: unknown
+  redirectURL?: string
   fields: ContactFormFieldBlock[]
 }
 
 type RawFormDoc = {
   id: number | string
   title?: string
+  confirmationType?: unknown
+  confirmationMessage?: unknown
+  redirect?: unknown
   fields?: unknown
 }
 
@@ -94,9 +100,18 @@ export function sanitizeContactForm(form: RawFormDoc): SanitizedContactForm {
       ].includes(b.blockType),
     )
 
+  const redirectURL =
+    form.redirect && typeof form.redirect === 'object'
+      ? ((form.redirect as { url?: unknown }).url as unknown)
+      : undefined
+
   return {
     id: form.id,
     title: String(form.title ?? ''),
+    confirmationType:
+      typeof form.confirmationType === 'string' ? (form.confirmationType as string) : undefined,
+    confirmationMessage: form.confirmationMessage,
+    redirectURL: typeof redirectURL === 'string' ? redirectURL : undefined,
     fields,
   }
 }
