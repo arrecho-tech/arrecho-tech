@@ -7,6 +7,7 @@ import * as migration_20260227_214500_fix_locked_documents_projects_rel from './
 import * as migration_20260302_004900_fix_locked_documents_forms_rels from './20260302_004900_fix_locked_documents_forms_rels'
 import * as migration_20260302_005300_create_form_builder_tables from './20260302_005300_create_form_builder_tables'
 import * as migration_20260302_011000_add_forms_webhook_category from './20260302_011000_add_forms_webhook_category'
+import * as migration_20260305_011800_add_site_settings_form_webhooks from './20260305_011800_add_site_settings_form_webhooks'
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260302_011000_add_forms_webhook_category.up,
     down: migration_20260302_011000_add_forms_webhook_category.down,
     name: '20260302_011000_add_forms_webhook_category',
+  },
+  {
+    up: migration_20260305_011800_add_site_settings_form_webhooks.up,
+    down: migration_20260305_011800_add_site_settings_form_webhooks.down,
+    name: '20260305_011800_add_site_settings_form_webhooks',
   },
 ]
