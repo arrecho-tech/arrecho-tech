@@ -200,9 +200,14 @@ export function ContactForm({ form }: Props) {
   }, [values])
 
   if (status.kind === 'success') {
+    const confirmationText = extractText(form.confirmationMessage)
+
     return (
-      <div aria-label="contact-received" className="mt-10 w-full max-w-2xl rounded-xl border border-white/10 bg-black/30 p-6 text-sm backdrop-blur-md">
-        Received — thanks! We’ll get back to you soon.
+      <div
+        aria-label="contact-received"
+        className="mt-10 w-full max-w-2xl rounded-xl border border-white/10 bg-black/30 p-6 text-sm backdrop-blur-md"
+      >
+        {confirmationText || 'Received — thanks! We’ll get back to you soon.'}
       </div>
     )
   }
