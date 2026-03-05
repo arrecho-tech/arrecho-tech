@@ -3,6 +3,9 @@
 import React from 'react'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import type { ContactFormFieldBlock, SanitizedContactForm } from '@/utils/contactForm'
 
 type Props = {
@@ -41,43 +44,46 @@ function Field({ field, value, setValue }: {
 
   if (field.blockType === 'textarea') {
     return (
-      <label style={{ display: 'block', marginBottom: 12 }}>
-        <div style={{ marginBottom: 6 }}>{label}</div>
-        <textarea
+      <div className="grid gap-2">
+        <Label htmlFor={name}>{label}</Label>
+        <Textarea
+          id={name}
           name={name}
           required={Boolean(field.required)}
           value={typeof value === 'string' ? value : ''}
           onChange={(e) => setValue(e.target.value)}
-          style={{ width: '100%', minHeight: 120 }}
         />
-      </label>
+      </div>
     )
   }
 
   if (field.blockType === 'checkbox') {
     return (
-      <label style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+      <div className="flex items-center gap-2">
         <input
+          id={name}
           type="checkbox"
           name={name}
           checked={Boolean(value)}
           onChange={(e) => setValue(e.target.checked)}
+          className="h-4 w-4"
         />
-        <span>{label}</span>
-      </label>
+        <Label htmlFor={name}>{label}</Label>
+      </div>
     )
   }
 
   if (field.blockType === 'select') {
     return (
-      <label style={{ display: 'block', marginBottom: 12 }}>
-        <div style={{ marginBottom: 6 }}>{label}</div>
+      <div className="grid gap-2">
+        <Label htmlFor={name}>{label}</Label>
         <select
+          id={name}
           name={name}
           required={Boolean(field.required)}
           value={typeof value === 'string' ? value : ''}
           onChange={(e) => setValue(e.target.value)}
-          style={{ width: '100%' }}
+          className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-800"
         >
           <option value="">Select…</option>
           {(field.options ?? []).map((opt, idx) => (
@@ -86,29 +92,34 @@ function Field({ field, value, setValue }: {
             </option>
           ))}
         </select>
-      </label>
+      </div>
     )
   }
 
   if (field.blockType === 'radio') {
     return (
-      <fieldset style={{ border: 'none', padding: 0, margin: '0 0 12px' }}>
-        <legend style={{ marginBottom: 6 }}>{label}</legend>
-        {(field.options ?? []).map((opt, idx) => {
-          const optValue = opt.value ?? ''
-          return (
-            <label key={idx} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <input
-                type="radio"
-                name={name}
-                value={optValue}
-                checked={value === optValue}
-                onChange={() => setValue(optValue)}
-              />
-              <span>{getLabel(opt.label) || optValue}</span>
-            </label>
-          )
-        })}
+      <fieldset className="grid gap-2">
+        <legend className="text-sm font-medium leading-none">{label}</legend>
+        <div className="grid gap-2">
+          {(field.options ?? []).map((opt, idx) => {
+            const optValue = opt.value ?? ''
+            const id = `${name}-${idx}`
+            return (
+              <div key={idx} className="flex items-center gap-2">
+                <input
+                  id={id}
+                  type="radio"
+                  name={name}
+                  value={optValue}
+                  checked={value === optValue}
+                  onChange={() => setValue(optValue)}
+                  className="h-4 w-4"
+                />
+                <Label htmlFor={id}>{getLabel(opt.label) || optValue}</Label>
+              </div>
+            )
+          })}
+        </div>
       </fieldset>
     )
   }
@@ -116,17 +127,17 @@ function Field({ field, value, setValue }: {
   const type = field.blockType === 'email' ? 'email' : field.blockType === 'number' ? 'number' : 'text'
 
   return (
-    <label style={{ display: 'block', marginBottom: 12 }}>
-      <div style={{ marginBottom: 6 }}>{label}</div>
-      <input
+    <div className="grid gap-2">
+      <Label htmlFor={name}>{label}</Label>
+      <Input
+        id={name}
         type={type}
         name={name}
         required={Boolean(field.required)}
         value={typeof value === 'string' || typeof value === 'number' ? String(value) : ''}
         onChange={(e) => setValue(e.target.value)}
-        style={{ width: '100%' }}
       />
-    </label>
+    </div>
   )
 }
 
@@ -160,28 +171,39 @@ export function ContactForm({ form }: Props) {
   }, [values])
 
   if (status.kind === 'success') {
-    return <div aria-label="contact-received">Received — thanks! We’ll get back to you soon.</div>
+    return (
+      <div aria-label="contact-received" className="mt-10 w-full max-w-xl rounded-md border border-slate-200 bg-white/5 p-6 text-sm dark:border-slate-800">
+        Received — thanks! We’ll get back to you soon.
+      </div>
+    )
   }
 
   return (
-    <form onSubmit={onSubmit} aria-label="contact-form">
-      <h2 style={{ marginTop: 32 }}>Contact</h2>
-      {form.fields.map((f, idx) => (
-        <Field
-          key={f.id || idx}
-          field={f}
-          value={values[f.name || '']}
-          setValue={(v) => setValue(f.name || '', v)}
-        />
-      ))}
-      <Button type="submit" disabled={status.kind === 'submitting'}>
-        {status.kind === 'submitting' ? 'Sending…' : 'Send'}
-      </Button>
-      {status.kind === 'error' && (
-        <div role="alert" style={{ marginTop: 12 }}>
-          Error: {status.message}
+    <form onSubmit={onSubmit} aria-label="contact-form" className="mt-10 w-full max-w-xl">
+      <h2 className="mb-6 text-2xl font-semibold tracking-tight">Contact</h2>
+
+      <div className="grid gap-4">
+        {form.fields.map((f, idx) => (
+          <Field
+            key={f.id || idx}
+            field={f}
+            value={values[f.name || '']}
+            setValue={(v) => setValue(f.name || '', v)}
+          />
+        ))}
+
+        <div className="pt-2">
+          <Button type="submit" disabled={status.kind === 'submitting'}>
+            {status.kind === 'submitting' ? 'Sending…' : 'Send'}
+          </Button>
         </div>
-      )}
+
+        {status.kind === 'error' && (
+          <div role="alert" className="text-sm text-red-400">
+            Error: {status.message}
+          </div>
+        )}
+      </div>
     </form>
   )
 }
