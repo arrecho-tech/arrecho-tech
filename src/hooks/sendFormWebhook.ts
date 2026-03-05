@@ -31,26 +31,17 @@ type SiteSettingsDoc = {
   formWebhooks?: WebhookEndpoint[]
 }
 
-export const sendFormWebhook = async ({
-  doc,
-  req,
-}: {
-  doc: FormSubmissionDoc
-  // Payload's req type is not exported cleanly in this repo; keep this hook
-  // compatible without pulling in internal types.
-  req: {
-    payload?: {
+export const sendFormWebhook = async (args: unknown) => {
+  const { doc, req } = args as { doc: FormSubmissionDoc; req: unknown }
+
+  try {
+    const payload = (req as { payload?: unknown })?.payload as {
       logger: {
         warn: (meta: unknown, message?: string) => void
-        error: (meta: unknown, message?: string) => void
       }
       findByID: (args: unknown) => Promise<unknown>
       findGlobal: (args: unknown) => Promise<unknown>
-    }
-  }
-}) => {
-  try {
-    const payload = req.payload
+    } | undefined
     if (!payload) return doc
 
     const formRel = doc?.form
@@ -117,7 +108,10 @@ export const sendFormWebhook = async ({
     }
   } catch (err) {
     // Best-effort: never block a form submission because a webhook failed.
-    req.payload?.logger?.error({ err }, 'Failed to send form webhook')
+    ;(req as { payload?: { logger?: { error?: (meta: unknown, message?: string) => void } } })?.payload?.logger?.error?.(
+      { err },
+      'Failed to send form webhook',
+    )
   }
 
   return doc
