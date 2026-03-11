@@ -9,6 +9,7 @@ import * as migration_20260302_005300_create_form_builder_tables from './2026030
 import * as migration_20260302_011000_add_forms_webhook_category from './20260302_011000_add_forms_webhook_category'
 import * as migration_20260305_011800_add_site_settings_form_webhooks from './20260305_011800_add_site_settings_form_webhooks'
 import * as migration_20260305_012300_add_site_settings_default_form_webhook_category from './20260305_012300_add_site_settings_default_form_webhook_category'
+import * as migration_20260306_170000_add_user_role from './20260306_170000_add_user_role'
 
 export const migrations = [
   {
@@ -65,5 +66,10 @@ export const migrations = [
     up: migration_20260305_012300_add_site_settings_default_form_webhook_category.up,
     down: migration_20260305_012300_add_site_settings_default_form_webhook_category.down,
     name: '20260305_012300_add_site_settings_default_form_webhook_category',
+  },
+  {
+    up: migration_20260306_170000_add_user_role.up,
+    down: migration_20260306_170000_add_user_role.down,
+    name: '20260306_170000_add_user_role',
   },
 ]

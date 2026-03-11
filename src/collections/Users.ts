@@ -8,6 +8,16 @@ export const Users: CollectionConfig = {
   auth: true,
   fields: [
     {
+      name: 'role',
+      type: 'select',
+      required: true,
+      defaultValue: 'admin',
+      options: [
+        { label: 'Admin', value: 'admin' },
+        { label: 'Customer', value: 'customer' },
+      ],
+    },
+    {
       name: 'firstName',
       type: 'text',
       required: true,
