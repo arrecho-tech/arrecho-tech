@@ -1,6 +1,8 @@
 import { headers } from 'next/headers'
 import Link from 'next/link'
 
+import { Button } from '@/components/ui/button'
+
 type MeResponse = {
   user?: {
     id: string | number
@@ -33,12 +35,16 @@ export default async function DashboardHomePage() {
 
   if (!me.user) {
     return (
-      <div style={{ maxWidth: 720, margin: '120px auto', padding: 24 }}>
-        <h1 style={{ fontSize: 28, fontWeight: 700 }}>Welcome</h1>
-        <p style={{ marginTop: 8 }}>Please sign in to access your dashboard.</p>
-        <p style={{ marginTop: 16 }}>
-          <Link href="/login">Go to login</Link>
+      <div className="mx-auto flex min-h-[70vh] w-full max-w-2xl flex-col items-center justify-center p-6 text-center">
+        <h1 className="text-3xl font-semibold tracking-tight">Welcome</h1>
+        <p className="mt-2 text-neutral-600 dark:text-neutral-300">
+          Please sign in to access your dashboard.
         </p>
+        <div className="mt-6">
+          <Button asChild>
+            <Link href="/dashboard/login">Sign in</Link>
+          </Button>
+        </div>
       </div>
     )
   }
@@ -46,9 +52,9 @@ export default async function DashboardHomePage() {
   const displayName = [me.user.firstName, me.user.lastName].filter(Boolean).join(' ') || me.user.email
 
   return (
-    <div style={{ maxWidth: 720, margin: '120px auto', padding: 24 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 700 }}>Welcome to your dashboard</h1>
-      <p style={{ marginTop: 8 }}>Hi {displayName}.</p>
+    <div className="mx-auto flex min-h-[70vh] w-full max-w-2xl flex-col items-center justify-center p-6 text-center">
+      <h1 className="text-3xl font-semibold tracking-tight">Welcome to your dashboard</h1>
+      <p className="mt-2 text-neutral-600 dark:text-neutral-300">Hi {displayName}.</p>
     </div>
   )
 }
