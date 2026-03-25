@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import React from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { getPayload } from 'payload'
+import { unstable_cache } from 'next/cache'
 
 import { SiteBackground } from '@/components/frontend/SiteBackground'
 import { siteSettingsSlugs } from '@/globals/SiteSettings'
@@ -10,8 +11,6 @@ import type { SiteSetting } from '@/payload-types'
 
 import './globals.css'
 import './styles.css'
-
-export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: {
@@ -27,36 +26,45 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Arrecho Tech',
     description: 'Arrecho Tech website.',
-    images: ['/brand/logo-square.svg'],
+    images: [{ url: '/icon-512.png', width: 512, height: 512, alt: 'Arrecho Tech' }],
   },
 }
 
-async function getSiteSettings(): Promise<SiteSetting | null> {
-  const payload = await getPayload({ config: await config })
-
-  for (const slug of siteSettingsSlugs) {
+const getSiteSettings = unstable_cache(
+  async (): Promise<SiteSetting | null> => {
+    let payload
     try {
-      return (await payload.findGlobal({
-        slug: slug as never,
-        depth: 1,
-      })) as SiteSetting
-    } catch (error) {
-      const message = error instanceof Error ? error.message : ''
-
-      if (
-        message.includes('Global not found') ||
-        message.includes('global with slug') ||
-        message.includes('not configured')
-      ) {
-        continue
-      }
-
-      throw error
+      payload = await getPayload({ config: await config })
+    } catch {
+      return null
     }
-  }
 
-  return null
-}
+    for (const slug of siteSettingsSlugs) {
+      try {
+        return (await payload.findGlobal({
+          slug: slug as never,
+          depth: 1,
+        })) as SiteSetting
+      } catch (error) {
+        const message = error instanceof Error ? error.message : ''
+
+        if (
+          message.includes('Global not found') ||
+          message.includes('global with slug') ||
+          message.includes('not configured')
+        ) {
+          continue
+        }
+
+        throw error
+      }
+    }
+
+    return null
+  },
+  ['site-settings'],
+  { revalidate: 300 },
+)
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const siteSettings = await getSiteSettings()

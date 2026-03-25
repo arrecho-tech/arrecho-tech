@@ -23,6 +23,31 @@ const getPostBySlug = async (slug: string) => {
   return docs[0]
 }
 
+export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
+  try {
+    const payload = await getPayload({ config: await config })
+
+    const { docs } = await payload.find({
+      collection: 'posts',
+      depth: 0,
+      limit: 1000,
+      pagination: false,
+      where: {
+        status: {
+          equals: 'published',
+        },
+      },
+    })
+
+    return (docs ?? [])
+      .map((d) => ({ slug: d.slug }))
+      .filter((d): d is { slug: string } => typeof d.slug === 'string' && d.slug.length > 0)
+  } catch {
+    // If we can't reach the DB during build (common in CI), fall back to on-demand rendering.
+    return []
+  }
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -40,6 +65,11 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.excerpt || undefined,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt || undefined,
+      images: [{ url: '/icon-512.png', width: 512, height: 512, alt: 'Arrecho Tech' }],
+    },
   }
 }
 

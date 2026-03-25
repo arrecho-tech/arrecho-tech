@@ -5,13 +5,22 @@ import React from 'react'
 import config from '@/payload.config'
 
 export default async function ProjectsIndexPage() {
-  const payload = await getPayload({ config: await config })
+  let docs: any[] = []
 
-  const { docs } = await payload.find({
-    collection: 'projects',
-    limit: 50,
-    sort: '-createdAt',
-  })
+  try {
+    const payload = await getPayload({ config: await config })
+
+    const res = await payload.find({
+      collection: 'projects',
+      limit: 50,
+      sort: '-createdAt',
+    })
+
+    docs = res.docs
+  } catch {
+    // During build/CI we may not have a DB available; fall back to an empty list.
+    docs = []
+  }
 
   return (
     <section style={{ margin: '0 auto', maxWidth: 920, padding: '2rem 1.5rem 4rem' }}>

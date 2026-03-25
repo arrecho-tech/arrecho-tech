@@ -5,12 +5,19 @@ import React from 'react'
 import config from '@/payload.config'
 
 export default async function PostsIndexPage() {
-  const payload = await getPayload({ config: await config })
-  const { docs } = await payload.find({
-    collection: 'posts',
-    limit: 20,
-    sort: '-createdAt',
-  })
+  let docs: any[] = []
+
+  try {
+    const payload = await getPayload({ config: await config })
+    const res = await payload.find({
+      collection: 'posts',
+      limit: 20,
+      sort: '-createdAt',
+    })
+    docs = res.docs
+  } catch {
+    docs = []
+  }
 
   return (
     <section style={{ margin: '0 auto', maxWidth: 920, padding: '2rem 1.5rem 4rem' }}>

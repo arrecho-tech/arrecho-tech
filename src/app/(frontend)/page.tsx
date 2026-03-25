@@ -1,21 +1,24 @@
-import { headers as getHeaders } from 'next/headers.js'
 import Image from 'next/image'
 import { getPayload } from 'payload'
 import React from 'react'
 
 import { ContactForm } from '@/components/forms/ContactForm'
 import { FadeIn } from '@/components/frontend/FadeIn'
+import { HomeGreeting } from '@/components/frontend/HomeGreeting'
 import config from '@/payload.config'
 import { findContactForm, sanitizeContactForm } from '@/utils/contactForm'
 import './styles.css'
 
 export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
+  let contactForm: Awaited<ReturnType<typeof findContactForm>> | null = null
 
-  const contactForm = await findContactForm(payload)
+  try {
+    const payloadConfig = await config
+    const payload = await getPayload({ config: payloadConfig })
+    contactForm = await findContactForm(payload)
+  } catch {
+    contactForm = null
+  }
 
   return (
     <div className="home">
@@ -25,8 +28,7 @@ export default async function HomePage() {
             <source srcSet="/brand/logo-circle.svg" />
             <Image alt="Arrecho Tech" height={130} src="/brand/logo-circle.svg" width={130} />
           </picture>
-          {!user && <h1>Welcome to Arrecho Tech.</h1>}
-          {user && <h1>Welcome back, {user.firstName}</h1>}
+          <HomeGreeting />
         </div>
       </section>
 
