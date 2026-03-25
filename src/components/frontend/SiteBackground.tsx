@@ -2,6 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 
+import { getOptimizedImageUrl } from '@/utils/optimizedImageUrl'
+
 type SiteBackgroundProps = {
   imageURLs: string[]
   overlayEnabled?: boolean | null
@@ -105,6 +107,11 @@ export function SiteBackground({
     }
   }, [parallaxEnabled, prefersReducedMotion])
 
+  const optimizedBackgroundURL = useMemo(
+    () => (selectedImageURL ? getOptimizedImageUrl(selectedImageURL, { width: 1920, quality: 75 }) : null),
+    [selectedImageURL],
+  )
+
   const backgroundTransform = useMemo(() => {
     const intensity = Math.max(0, parallaxIntensity ?? 16)
 
@@ -121,10 +128,10 @@ export function SiteBackground({
     <div aria-hidden className="site-background">
       <div
         className="site-background__image"
-        data-has-image={selectedImageURL ? 'true' : 'false'}
+        data-has-image={optimizedBackgroundURL ? 'true' : 'false'}
         data-testid="site-background-image"
         style={{
-          backgroundImage: selectedImageURL ? `url('${selectedImageURL}')` : undefined,
+          backgroundImage: optimizedBackgroundURL ? `url('${optimizedBackgroundURL}')` : undefined,
           transform: backgroundTransform,
         }}
       />
